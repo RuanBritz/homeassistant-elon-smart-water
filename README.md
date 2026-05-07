@@ -46,6 +46,10 @@ Example response:
 }
 ```
 
+`powerSource` mapping:
+- `1` = Solar
+- `2` = Grid
+
 ## Installation
 
 ### HACS (recommended)
