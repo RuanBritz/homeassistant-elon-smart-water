@@ -18,6 +18,7 @@ from .const import (
     API_TIMEOUT,
     CONF_HOST,
     CONF_PORT,
+    CONF_SCAN_INTERVAL,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -31,11 +32,15 @@ class ElonSmartWaterCoordinator(DataUpdateCoordinator[list[dict[str, Any]]]):
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize the coordinator."""
+        scan_interval = entry.options.get(
+            CONF_SCAN_INTERVAL,
+            entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+        )
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(seconds=DEFAULT_SCAN_INTERVAL),
+            update_interval=timedelta(seconds=scan_interval),
         )
         self.host: str = entry.data[CONF_HOST]
         self.port: int = entry.data.get(CONF_PORT, DEFAULT_PORT)
