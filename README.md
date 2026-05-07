@@ -30,14 +30,14 @@ Example response:
 {
   "deviceStatuses": [
     {
-      "device": 7604,
+      "device": 1234,
       "lastComms": 200310972,
       "waterTemperature": 30.0,
       "hasOpenAlarms": false,
       "acNotPresent": false,
       "powerSource": 1,
-      "logicalName": "Meling Unit 3",
-      "streetAddress": "5 Avonia Street",
+      "logicalName": "Unit 1",
+      "streetAddress": "1 Road",
       "reheatTime": 0
     }
   ]
