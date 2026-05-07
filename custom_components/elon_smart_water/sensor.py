@@ -43,6 +43,7 @@ SENSOR_DESCRIPTIONS: tuple[ElonSensorEntityDescription, ...] = (
         key="power_source",
         name="Power Source",
         value_key="powerSource",
+        value_fn=lambda value: {1: "Solar", 2: "Grid"}.get(value, value),
     ),
     ElonSensorEntityDescription(
         key="reheat_time",
