@@ -1,7 +1,7 @@
 {
   "domain": "elon_smart_water",
   "name": "Elon Smart Water",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "documentation": "https://github.com/RuanBritz/homeassistant-elon-smart-water",
   "issue_tracker": "https://github.com/RuanBritz/homeassistant-elon-smart-water/issues",
   "requirements": [],
