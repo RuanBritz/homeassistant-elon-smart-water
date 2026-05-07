@@ -30,6 +30,14 @@ class ElonSensorEntityDescription(SensorEntityDescription):
     value_fn: Callable[[Any], Any] | None = None
 
 
+POWER_SOURCE_MAP: dict[int, str] = {1: "Solar", 2: "Grid"}
+
+
+def _map_power_source(value: Any) -> Any:
+    """Map power source numeric values to readable labels."""
+    return POWER_SOURCE_MAP.get(value, value)
+
+
 SENSOR_DESCRIPTIONS: tuple[ElonSensorEntityDescription, ...] = (
     ElonSensorEntityDescription(
         key="water_temperature",
@@ -43,7 +51,7 @@ SENSOR_DESCRIPTIONS: tuple[ElonSensorEntityDescription, ...] = (
         key="power_source",
         name="Power Source",
         value_key="powerSource",
-        value_fn=lambda value: {1: "Solar", 2: "Grid"}.get(value, value),
+        value_fn=_map_power_source,
     ),
     ElonSensorEntityDescription(
         key="reheat_time",
