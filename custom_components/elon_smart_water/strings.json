@@ -1,0 +1,43 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "menu_options": {
+          "manual": "Enter device IP manually",
+          "scan": "Scan network for devices"
+        }
+      },
+      "manual": {
+        "title": "Connect to Elon Smart Water",
+        "description": "Enter the IP address of your Elon Smart Water controller.",
+        "data": {
+          "host": "Host (IP address)",
+          "port": "Port"
+        }
+      },
+      "scan": {
+        "title": "Scan Network",
+        "description": "Enter the network in CIDR notation to scan for Elon Smart Water devices (e.g. 192.168.1.0/24).",
+        "data": {
+          "network": "Network (CIDR notation)",
+          "port": "Port"
+        }
+      },
+      "scan_results": {
+        "title": "Devices Found",
+        "description": "Found {count} Elon Smart Water device(s). Select a device to add.",
+        "data": {
+          "host": "Device IP"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to the device. Check the IP address and port.",
+      "no_devices_found": "No Elon Smart Water devices were found on the network.",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This device is already configured."
+    }
+  }
+}

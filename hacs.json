@@ -1,0 +1,5 @@
+{
+  "name": "Elon Smart Water",
+  "domains": ["sensor", "binary_sensor"],
+  "iot_class": "local_polling"
+}
