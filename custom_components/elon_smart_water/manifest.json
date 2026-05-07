@@ -1,0 +1,12 @@
+{
+  "domain": "elon_smart_water",
+  "name": "Elon Smart Water",
+  "version": "1.0.0",
+  "documentation": "https://github.com/RuanBritz/homeassistant-elon-smart-water",
+  "issue_tracker": "https://github.com/RuanBritz/homeassistant-elon-smart-water/issues",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@RuanBritz"],
+  "config_flow": true,
+  "iot_class": "local_polling"
+}
