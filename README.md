@@ -1,5 +1,7 @@
 # Elon Smart Water – Home Assistant Integration
 
+![Elon Smart Water Logo](custom_components/elon_smart_water/logo.png)
+
 A custom Home Assistant integration that discovers Elon Smart Water heaters on your local network and exposes their status as sensor entities.
 
 ## Features
@@ -15,7 +17,7 @@ A custom Home Assistant integration that discovers Elon Smart Water heaters on y
 - **Binary sensors** per device:
   - Open Alarms (problem class)
   - AC Not Present (problem class)
-- Polling interval: 60 seconds
+- Configurable polling interval (default: 60 seconds)
 
 ## Device API
 
@@ -65,3 +67,4 @@ Example response:
 3. Choose **Enter device IP manually** or **Scan network for devices**.
    - For the network scan, enter the subnet in CIDR notation (e.g. `192.168.3.0/24`). The integration will pre-fill a value based on the Home Assistant host IP.
 4. Once a controller is found, confirm to complete the setup.
+5. (Optional) Open the integration options to adjust polling interval.
