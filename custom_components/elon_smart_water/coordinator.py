@@ -11,6 +11,7 @@ import async_timeout
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -49,13 +50,13 @@ class ElonSmartWaterCoordinator(DataUpdateCoordinator[list[dict[str, Any]]]):
     async def _async_update_data(self) -> list[dict[str, Any]]:
         """Fetch data from the Elon Smart Water device."""
         url = f"http://{self.host}:{self.port}{API_PATH}"
+        session = async_get_clientsession(self.hass)
         try:
             async with async_timeout.timeout(API_TIMEOUT):
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(url) as response:
-                        response.raise_for_status()
-                        data = await response.json(content_type=None)
-                        return data.get("deviceStatuses", [])
+                async with session.get(url) as response:
+                    response.raise_for_status()
+                    data = await response.json(content_type=None)
+                    return data.get("deviceStatuses", [])
         except asyncio.TimeoutError as err:
             raise UpdateFailed(f"Timeout communicating with {url}") from err
         except aiohttp.ClientError as err:
@@ -73,6 +74,7 @@ class ElonSmartWaterCoordinator(DataUpdateCoordinator[list[dict[str, Any]]]):
         """Send a thermostat command to the Elon Smart Water device."""
         url = f"http://{self.host}:{self.port}{command_path}"
         payload: dict[str, Any] = {"authId": auth_id, "deviceSerial": device_serial}
+        session = async_get_clientsession(self.hass)
         headers = {
             "accept": "application/json",
             "accept-encoding": "gzip",
@@ -82,11 +84,10 @@ class ElonSmartWaterCoordinator(DataUpdateCoordinator[list[dict[str, Any]]]):
         }
         try:
             async with async_timeout.timeout(API_TIMEOUT):
-                async with aiohttp.ClientSession() as session:
-                    async with session.put(
-                        url, json=payload, headers=headers
-                    ) as response:
-                        response.raise_for_status()
+                async with session.put(
+                    url, json=payload, headers=headers
+                ) as response:
+                    response.raise_for_status()
         except asyncio.TimeoutError as err:
             raise UpdateFailed(f"Timeout communicating with {url}") from err
         except aiohttp.ClientError as err:
