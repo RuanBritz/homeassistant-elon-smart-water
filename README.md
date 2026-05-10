@@ -17,6 +17,9 @@ A custom Home Assistant integration that discovers Elon Smart Water heaters on y
 - **Binary sensors** per device:
   - Open Alarms (problem class)
   - AC Not Present (problem class)
+- **Buttons** per device:
+  - Force Reheat
+  - Cancel Grid Heating
 - Configurable polling interval (default: 60 seconds)
 
 ## Device API
@@ -25,6 +28,13 @@ The integration queries the Elon Smart Water controller at:
 
 ```
 GET http://<controller-ip>/V1/DeviceStatus/Query
+```
+
+Additional commands:
+
+```http
+PUT http://<controller-ip>/V1/Thermostat/ForceReheat
+PUT http://<controller-ip>/V1/Thermostat/CancelGridHeating
 ```
 
 Example response:

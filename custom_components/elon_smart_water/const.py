@@ -11,6 +11,8 @@ DEFAULT_PORT = 80
 DEFAULT_SCAN_INTERVAL = 60  # seconds
 
 API_PATH = "/V1/DeviceStatus/Query"
+API_FORCE_REHEAT_PATH = "/V1/Thermostat/ForceReheat"
+API_CANCEL_GRID_HEATING_PATH = "/V1/Thermostat/CancelGridHeating"
 API_TIMEOUT = 10  # seconds
 
 SCAN_TIMEOUT = 3  # seconds per host during network scan
