@@ -12,7 +12,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import UnitOfTemperature
+from homeassistant.const import UnitOfPower, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -64,6 +64,46 @@ SENSOR_DESCRIPTIONS: tuple[ElonSensorEntityDescription, ...] = (
         key="last_comms",
         name="Last Communication",
         value_key="lastComms",
+    ),
+    ElonSensorEntityDescription(
+        key="solar_input",
+        name="Solar Input",
+        value_key="solarInput",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    ElonSensorEntityDescription(
+        key="element_power",
+        name="Element Power",
+        value_key="elementPower",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    ElonSensorEntityDescription(
+        key="solar_set_point",
+        name="Solar Set Point",
+        value_key="solarSetPoint",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda v: int(v) if v is not None else None,
+    ),
+    ElonSensorEntityDescription(
+        key="grid_set_point",
+        name="Grid Set Point",
+        value_key="gridSetPoint",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda v: int(v) if v is not None else None,
+    ),
+    ElonSensorEntityDescription(
+        key="heating_policy",
+        name="Heating Policy",
+        value_key="heatingPolicy",
+        value_fn=lambda v: int(v) if v is not None else None,
     ),
 )
 
