@@ -17,7 +17,29 @@ A custom Home Assistant integration that discovers Elon Smart Water heaters on y
 - **Binary sensors** per device:
   - Open Alarms (problem class)
   - AC Not Present (problem class)
+- **Local control** per device:
+  - Boost / Force Reheat (button)
+  - Cancel Grid Heating (button)
 - Configurable polling interval (default: 60 seconds)
+
+## Local control
+
+The two buttons send a request to the thermostat's `/V1/...` HTTP API, then
+refresh the status sensors.
+
+| Action | Request |
+|---|---|
+| Boost / Force Reheat | `PUT /V1/Thermostat/ForceReheat` |
+| Cancel Grid Heating | `PUT /V1/Thermostat/CancelGridHeating` |
+
+The body is `{"applicationId": <int>, "authId": "<string>", "deviceSerial": <int>}`
+and a successful call returns `{"status": "Success"}`. `applicationId`/`authId`
+default to `0`/empty. If your thermostat rejects control without them, open the
+integration **Options** and enter the values captured from the official app.
+
+> **Note:** the official app gets a fresh `authId` from
+> `/V1/ApplicationVerification/Authenticate` every few minutes, so a captured
+> `authId` may stop working after a while.
 
 ## Device API
 
