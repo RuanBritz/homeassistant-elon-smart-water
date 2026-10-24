@@ -223,7 +223,9 @@ class ElonSmartWaterOptionsFlow(config_entries.OptionsFlow):
             CONF_SCAN_INTERVAL, data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
         )
         current_app_id = opts.get(CONF_APPLICATION_ID, data.get(CONF_APPLICATION_ID, 0))
-        current_auth_id = opts.get(CONF_AUTH_ID, data.get(CONF_AUTH_ID, 0))
+        current_auth_id = opts.get(CONF_AUTH_ID, data.get(CONF_AUTH_ID, ""))
+        if current_auth_id in (0, "0", None):
+            current_auth_id = ""
 
         return self.async_show_form(
             step_id="init",
@@ -237,7 +239,7 @@ class ElonSmartWaterOptionsFlow(config_entries.OptionsFlow):
                     ): vol.Coerce(int),
                     vol.Optional(
                         CONF_AUTH_ID, default=current_auth_id
-                    ): vol.Coerce(int),
+                    ): str,
                 }
             ),
         )

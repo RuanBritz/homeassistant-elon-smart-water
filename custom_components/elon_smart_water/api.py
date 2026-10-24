@@ -1,13 +1,11 @@
-"""Local HTTP client for controlling an Elon Smart Water thermostat.
+"""HTTP client for Elon Smart Water grid reheat control.
 
-The thermostat exposes an HTTP API on port 80. Request/response shapes here were
-recovered from the app's compiled Dart (libapp.so); see API_ENDPOINTS.md. Every
-control request is a JSON body carrying applicationId, authId and deviceSerial as
-integers, which the app obtains from an on-device pairing handshake.
+Request shapes were confirmed against a capture of the official app. Each
+control request is a JSON body carrying applicationId (int), authId (str) and
+deviceSerial (int). The app gets authId from /V1/ApplicationVerification/
+Authenticate; it looks like "<base64 timestamp>:<base64 signature>".
 
-Status reads on the local port work with no auth, so applicationId/authId default
-to 0. If a device rejects unauthenticated control, the user can supply the values
-captured from the app via the integration options.
+applicationId/authId default to 0/"" and can be set in the integration options.
 """
 from __future__ import annotations
 
@@ -18,26 +16,17 @@ from typing import Any
 import aiohttp
 import async_timeout
 
-from .const import (
-    API_TIMEOUT,
-    PATH_CANCEL_GRID_HEATING,
-    PATH_FORCE_REHEAT,
-    PATH_PROPERTY_QUERY,
-    PATH_PROPERTY_UPDATE,
-    PROP_GRID_SETPOINT,
-    PROP_HEATING_POLICY,
-    PROP_SOLAR_SETPOINT,
-)
+from .const import API_TIMEOUT, PATH_CANCEL_GRID_HEATING, PATH_FORCE_REHEAT
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class ElonApiError(Exception):
-    """Raised when a local control request fails."""
+    """Raised when a control request fails."""
 
 
 class ElonLocalClient:
-    """Sends control requests to a thermostat on the local network."""
+    """Sends control requests to a thermostat."""
 
     def __init__(
         self,
@@ -45,7 +34,7 @@ class ElonLocalClient:
         host: str,
         port: int,
         application_id: int = 0,
-        auth_id: int = 0,
+        auth_id: str = "",
     ) -> None:
         """Initialize the client."""
         self._session = session
@@ -54,7 +43,7 @@ class ElonLocalClient:
         self._auth_id = auth_id
 
     def _auth_body(self, device_serial: int) -> dict[str, Any]:
-        """Return the base body shared by every device-scoped request."""
+        """Return the body shared by every device-scoped request."""
         return {
             "applicationId": self._application_id,
             "authId": self._auth_id,
@@ -83,6 +72,8 @@ class ElonLocalClient:
             raise ElonApiError(f"Timeout calling {path} on {url}") from err
         except aiohttp.ClientError as err:
             raise ElonApiError(f"Error calling {path} on {url}: {err}") from err
+        if isinstance(data, dict) and data.get("status") not in (None, "Success"):
+            raise ElonApiError(f"{path} returned status {data.get('status')!r}")
         return data if isinstance(data, dict) else {"data": data}
 
     async def force_reheat(self, device_serial: int) -> dict[str, Any]:
@@ -96,42 +87,3 @@ class ElonLocalClient:
         return await self._request(
             "PUT", PATH_CANCEL_GRID_HEATING, self._auth_body(device_serial)
         )
-
-    async def set_property(
-        self, device_serial: int, name: str, value: Any
-    ) -> dict[str, Any]:
-        """Update a single device configuration property."""
-        body = self._auth_body(device_serial)
-        body["name"] = name
-        body["value"] = value
-        return await self._request("PUT", PATH_PROPERTY_UPDATE, body)
-
-    async def set_heating_policy(
-        self, device_serial: int, policy: int
-    ) -> dict[str, Any]:
-        """Set the heating policy (1 = Solar Only, 5 = Grid Only)."""
-        return await self.set_property(device_serial, PROP_HEATING_POLICY, policy)
-
-    async def set_solar_setpoint(
-        self, device_serial: int, temperature: float
-    ) -> dict[str, Any]:
-        """Set the solar target temperature (deg C)."""
-        return await self.set_property(
-            device_serial, PROP_SOLAR_SETPOINT, temperature
-        )
-
-    async def set_grid_setpoint(
-        self, device_serial: int, temperature: float
-    ) -> dict[str, Any]:
-        """Set the grid target temperature (deg C)."""
-        return await self.set_property(
-            device_serial, PROP_GRID_SETPOINT, temperature
-        )
-
-    async def query_properties(
-        self, device_serial: int, properties: list[str]
-    ) -> dict[str, Any]:
-        """Read one or more device configuration properties."""
-        body = self._auth_body(device_serial)
-        body["properties"] = properties
-        return await self._request("PUT", PATH_PROPERTY_QUERY, body)

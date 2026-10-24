@@ -54,14 +54,14 @@ class ElonSmartWaterCoordinator(DataUpdateCoordinator[list[dict[str, Any]]]):
             CONF_APPLICATION_ID, entry.data.get(CONF_APPLICATION_ID, 0)
         )
         auth_id = entry.options.get(
-            CONF_AUTH_ID, entry.data.get(CONF_AUTH_ID, 0)
+            CONF_AUTH_ID, entry.data.get(CONF_AUTH_ID, "")
         )
         self.client = ElonLocalClient(
             async_get_clientsession(hass),
             self.host,
             self.port,
             application_id=int(application_id),
-            auth_id=int(auth_id),
+            auth_id="" if auth_id in (0, "0", None) else str(auth_id),
         )
 
     async def _async_update_data(self) -> list[dict[str, Any]]:

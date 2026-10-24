@@ -46,11 +46,11 @@
     "step": {
       "init": {
         "title": "Options",
-        "description": "Configure the Elon Smart Water integration. Application ID and Auth ID are only needed if your thermostat rejects unauthenticated local control; leave them at 0 otherwise.",
+        "description": "Configure the Elon Smart Water integration. Application ID and Auth ID are sent with the Boost and Cancel Grid Heating buttons; leave them empty if your thermostat accepts control without them.",
         "data": {
           "scan_interval": "Polling interval (seconds)",
-          "application_id": "Application ID (optional, for control)",
-          "auth_id": "Auth ID (optional, for control)"
+          "application_id": "Application ID (optional, for boost/cancel)",
+          "auth_id": "Auth ID (optional, for boost/cancel)"
         }
       }
     }
