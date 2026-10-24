@@ -16,6 +16,8 @@ from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
     API_PATH,
+    CONF_APPLICATION_ID,
+    CONF_AUTH_ID,
     CONF_HOST,
     CONF_NETWORK,
     CONF_PORT,
@@ -215,10 +217,13 @@ class ElonSmartWaterOptionsFlow(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        current_interval = self._config_entry.options.get(
-            CONF_SCAN_INTERVAL,
-            self._config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+        opts = self._config_entry.options
+        data = self._config_entry.data
+        current_interval = opts.get(
+            CONF_SCAN_INTERVAL, data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
         )
+        current_app_id = opts.get(CONF_APPLICATION_ID, data.get(CONF_APPLICATION_ID, 0))
+        current_auth_id = opts.get(CONF_AUTH_ID, data.get(CONF_AUTH_ID, 0))
 
         return self.async_show_form(
             step_id="init",
@@ -227,6 +232,12 @@ class ElonSmartWaterOptionsFlow(config_entries.OptionsFlow):
                     vol.Required(
                         CONF_SCAN_INTERVAL, default=current_interval
                     ): vol.All(vol.Coerce(int), vol.Range(min=5, max=3600)),
+                    vol.Optional(
+                        CONF_APPLICATION_ID, default=current_app_id
+                    ): vol.Coerce(int),
+                    vol.Optional(
+                        CONF_AUTH_ID, default=current_auth_id
+                    ): vol.Coerce(int),
                 }
             ),
         )

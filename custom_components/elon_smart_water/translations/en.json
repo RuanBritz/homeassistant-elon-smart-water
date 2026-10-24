@@ -46,9 +46,11 @@
     "step": {
       "init": {
         "title": "Options",
-        "description": "Configure Elon Smart Water integration settings.",
+        "description": "Configure the Elon Smart Water integration. Application ID and Auth ID are only needed if your thermostat rejects unauthenticated local control; leave them at 0 otherwise.",
         "data": {
-          "scan_interval": "Polling interval (seconds)"
+          "scan_interval": "Polling interval (seconds)",
+          "application_id": "Application ID (optional, for control)",
+          "auth_id": "Auth ID (optional, for control)"
         }
       }
     }
